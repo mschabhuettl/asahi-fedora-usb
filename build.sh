@@ -241,6 +241,14 @@ install_usb() {
     # remove it like this to account for it being named something different
     find $mnt_usb/root/ -maxdepth 1 -mindepth 1 -type d | grep -Ev '/\..*$' | xargs rm -rf
 
+    echo "### Updating system inside USB root"
+    arch-chroot $mnt_usb dnf clean all
+    arch-chroot $mnt_usb dnf makecache --refresh
+    arch-chroot $mnt_usb dnf upgrade --refresh --assumeyes
+
+    echo "### Cloning asahi-encrypt into /root"
+    arch-chroot $mnt_usb bash -c 'cd /root && git clone https://github.com/osx-tools/asahi-encrypt.git'
+
     echo '### Unmounting usb partitions'
     umount $mnt_usb/boot/efi
     umount $mnt_usb/boot
