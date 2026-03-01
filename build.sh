@@ -13,7 +13,7 @@ BOOT_UUID='a1492762-3fe2-4908-a8b9-118439becd26'
 ROOT_UUID='d747cb2a-aff1-4e47-8a33-c4d9b7475df9'
 
 # public dns server address -- will be used when chrooting into the rootfs and running dnf
-DNS='8.8.8.8'
+DNS='192.168.111.100'
 
 if [ "$(whoami)" != 'root' ]; then
 echo "You must be root to run this script"
