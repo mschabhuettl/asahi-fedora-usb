@@ -13,7 +13,7 @@ BOOT_UUID='a1492762-3fe2-4908-a8b9-118439becd26'
 ROOT_UUID='d747cb2a-aff1-4e47-8a33-c4d9b7475df9'
 
 # public dns server address -- will be used when chrooting into the rootfs and running dnf
-DNS='8.8.8.8'
+DNS='192.168.111.100'
 
 if [ "$(whoami)" != 'root' ]; then
 echo "You must be root to run this script"
@@ -232,6 +232,14 @@ install_usb() {
     # not sure how/why a $mnt_usb/root/asahi-fedora-usb directory is being created
     # remove it like this to account for it being named something different
     find $mnt_usb/root/ -maxdepth 1 -mindepth 1 -type d | grep -Ev '/\..*$' | xargs rm -rf
+
+    echo "### Updating system inside USB root"
+    arch-chroot $mnt_usb dnf clean all
+    arch-chroot $mnt_usb dnf makecache --refresh
+    arch-chroot $mnt_usb dnf upgrade --refresh --assumeyes
+
+    echo "### Cloning asahi-encrypt into /root"
+    arch-chroot $mnt_usb bash -c 'cd /root && git clone https://github.com/osx-tools/asahi-encrypt.git'
 
     echo '### Unmounting usb partitions'
     umount $mnt_usb/boot/efi
